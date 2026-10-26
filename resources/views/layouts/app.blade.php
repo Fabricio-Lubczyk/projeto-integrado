@@ -9,6 +9,7 @@
         @stack('styles')
     </head>
     <body>
+        <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
         <div class="site-shell">
             @include('partials.header')
             <main id="conteudo" class="site-main" tabindex="-1">
