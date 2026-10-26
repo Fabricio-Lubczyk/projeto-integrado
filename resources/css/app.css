@@ -55,3 +55,14 @@ h2 { margin-top: 11px; font-size: 23px; font-weight: 600; letter-spacing: -.02em
 .panel-description { max-width: 430px; margin-top: 12px; color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
 .availability-label { display: inline-flex; align-items: center; gap: 7px; margin-top: 25px; padding: 6px 10px; border: 1px solid #36333f; border-radius: 6px; color: #bcb7cb; font-size: 11px; }
 .availability-label > span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
+.site-header { border-bottom: 1px solid var(--border); }
+.header-content { display: flex; min-height: 88px; align-items: center; justify-content: space-between; gap: 32px; }
+.site-brand { display: inline-flex; flex-shrink: 0; align-items: center; gap: 11px; font-size: 15px; font-weight: 600; letter-spacing: -.02em; text-decoration: none; }
+.brand-symbol { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid #4c4267; border-radius: 10px; background: #262132; color: var(--accent); }
+.brand-symbol svg { width: 24px; height: 24px; }
+.main-navigation { display: flex; align-self: stretch; align-items: stretch; gap: 28px; }
+.navigation-link { display: inline-flex; align-items: center; border-bottom: 2px solid transparent; color: var(--text-secondary); font-size: 13px; text-decoration: none; }
+.navigation-link.is-active { border-bottom-color: var(--accent); color: var(--text-primary); }
+.header-caption { color: #898696; font-size: 11px; }
+.header-caption > span { color: var(--accent); }

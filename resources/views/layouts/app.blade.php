@@ -10,6 +10,7 @@
     </head>
     <body>
         <div class="site-shell">
+            @include('partials.header')
             <main id="conteudo" class="site-main" tabindex="-1">
                 <div class="page-container">
                     @yield('content')
