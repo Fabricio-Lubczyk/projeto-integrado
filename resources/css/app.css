@@ -66,3 +66,11 @@ h2 { margin-top: 11px; font-size: 23px; font-weight: 600; letter-spacing: -.02em
 .navigation-link.is-active { border-bottom-color: var(--accent); color: var(--text-primary); }
 .header-caption { color: #898696; font-size: 11px; }
 .header-caption > span { color: var(--accent); }
+
+.site-footer { border-top: 1px solid var(--border); }
+.footer-content { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 30px; }
+.footer-name { margin-bottom: 7px; color: #d8d5e1; font-size: 13px; font-weight: 600; }
+.footer-about > p:last-child, .footer-meta { color: var(--text-secondary); font-size: 11px; line-height: 1.7; }
+.footer-meta { display: grid; justify-items: end; gap: 7px; }
+.footer-meta a { text-decoration: none; }
+.footer-meta a > span { margin-left: 5px; color: var(--accent); }
