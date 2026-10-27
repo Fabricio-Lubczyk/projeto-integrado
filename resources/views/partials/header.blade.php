@@ -17,6 +17,9 @@
 
         <div class="header-actions">
             @auth
+                @if (auth()->user()->is_admin)
+                    <a class="account-link" href="{{ route('admin.index') }}">Administração</a>
+                @endif
                 <a class="account-link account-name" href="{{ route('account.show') }}">Minha conta</a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
