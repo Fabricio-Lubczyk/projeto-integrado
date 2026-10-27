@@ -15,6 +15,17 @@
             <a class="navigation-link" href="{{ route('inicio') }}#sobre-projeto">Sobre o projeto</a>
         </nav>
 
-        <span class="header-caption">Para quem vive os jogos<span aria-hidden="true">.</span></span>
+        <div class="header-actions">
+            @auth
+                <span class="account-name">{{ auth()->user()->name }}</span>
+            @else
+                @if (Route::has('login'))
+                    <a class="account-link" href="{{ route('login') }}">Entrar</a>
+                @endif
+                @if (Route::has('register'))
+                    <a class="account-link account-link-emphasis" href="{{ route('register') }}">Criar conta</a>
+                @endif
+            @endauth
+        </div>
     </div>
 </header>
