@@ -18,6 +18,10 @@
         <div class="header-actions">
             @auth
                 <span class="account-name">{{ auth()->user()->name }}</span>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="logout-button">Sair</button>
+                </form>
             @else
                 @if (Route::has('login'))
                     <a class="account-link" href="{{ route('login') }}">Entrar</a>

@@ -13,3 +13,7 @@ Route::middleware('guest')->group(function () {
         ->middleware('throttle:10,1')
         ->name('register.store');
 });
+
+Route::post('/sair', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
