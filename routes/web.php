@@ -12,6 +12,8 @@ Route::get('/conta', [AccountController::class, 'show'])
 
 Route::get('/conta/editar', [AccountController::class, 'edit'])->middleware('auth')->name('account.edit');
 
+Route::patch('/conta', [AccountController::class, 'update'])->middleware('auth')->name('account.update');
+
 Route::get('/admin', [DashboardController::class, 'index'])
     ->middleware(['auth', 'admin'])
     ->name('admin.index');
