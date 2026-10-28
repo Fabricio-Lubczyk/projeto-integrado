@@ -19,7 +19,7 @@
         <div class="games-grid">
             @forelse($games as $game)
                 <article class="game-card">
-                    <h2>{{ $game->title }}</h2>
+                    <h2><a href="{{ route('games.show', $game) }}">{{ $game->title }}</a></h2>
                     <p>{{ $game->developer }}</p>
                     <p>{{ $game->released_on?->format('d/m/Y') ?? 'Lançamento não informado' }}</p>
                 </article>

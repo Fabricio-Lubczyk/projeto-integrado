@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('inicio');
 Route::get('/jogos', [GameController::class, 'index'])->name('games.index');
+Route::get('/jogos/{game}', [GameController::class, 'show'])->whereNumber('game')->name('games.show');
 
 Route::get('/conta', [AccountController::class, 'show'])
     ->middleware('auth')

@@ -8,6 +8,11 @@ use Illuminate\View\View;
 
 class GameController extends Controller
 {
+    public function show(Game $game): View
+    {
+        return view('games.show', compact('game'));
+    }
+
     public function index(Request $request): View
     {
         $data = $request->validate(['q' => ['nullable', 'string', 'max:100']], [
