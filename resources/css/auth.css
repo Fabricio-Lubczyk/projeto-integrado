@@ -49,3 +49,6 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
     .account-name { max-width: 130px; }
     .main-navigation { margin-top: 0; }
 }
+
+.password-toggle { justify-self: start; min-height: 36px; padding: 4px 0; border: 0; background: transparent; color: var(--accent); font: inherit; font-size: 12px; cursor: pointer; }
+.password-toggle[hidden] { display: none; }
