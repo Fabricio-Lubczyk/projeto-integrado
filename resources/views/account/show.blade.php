@@ -23,6 +23,8 @@
             </div>
         </dl>
 
+        <a class="account-back" href="{{ route('account.edit') }}">Editar dados</a>
+
         <a class="account-back" href="{{ route('inicio') }}">Voltar ao início</a>
     </section>
 @endsection

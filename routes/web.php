@@ -10,6 +10,8 @@ Route::get('/conta', [AccountController::class, 'show'])
     ->middleware('auth')
     ->name('account.show');
 
+Route::get('/conta/editar', [AccountController::class, 'edit'])->middleware('auth')->name('account.edit');
+
 Route::get('/admin', [DashboardController::class, 'index'])
     ->middleware(['auth', 'admin'])
     ->name('admin.index');
