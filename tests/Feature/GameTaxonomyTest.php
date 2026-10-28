@@ -146,6 +146,36 @@ class GameTaxonomyTest extends TestCase
         $this->get(route('games.index'))->assertViewHas('games', fn ($games) => $games->total() === 16);
     }
 
+    public function test_catalog_query_count_does_not_grow_with_more_games(): void
+    {
+        [$genre, $platform] = $this->taxonomy();
+        $game = Game::factory()->create();
+        $game->genres()->attach($genre);
+        $game->platforms()->attach($platform);
+
+        DB::enableQueryLog();
+        DB::flushQueryLog();
+        $this->get(route('games.index'))->assertOk();
+        $singleGameQueries = count(DB::getQueryLog());
+        DB::disableQueryLog();
+
+        foreach (Game::factory()->count(11)->create() as $game) {
+            $game->genres()->attach($genre);
+            $game->platforms()->attach($platform);
+        }
+
+        DB::enableQueryLog();
+        DB::flushQueryLog();
+        $response = $this->get(route('games.index'))->assertOk();
+        $fullPageQueries = count(DB::getQueryLog());
+        DB::disableQueryLog();
+        DB::flushQueryLog();
+
+        $this->assertCount(12, $response->viewData('games'));
+        $this->assertGreaterThan(0, $singleGameQueries);
+        $this->assertSame($singleGameQueries, $fullPageQueries, 'Mais jogos não devem causar consultas individuais para cada vínculo.');
+    }
+
     public function test_empty_relationships_and_invalid_filters(): void
     {
         $game = Game::factory()->create();
