@@ -18,7 +18,7 @@
         </div>
         <p class="panel-eyebrow">Boas histórias merecem ser compartilhadas</p>
         <h2 id="titulo-descobertas">O próximo capítulo começa aqui.</h2>
-        <p class="panel-description">Em breve, os jogos e as avaliações da comunidade vão ocupar este espaço.</p>
-        <span class="availability-label"><span aria-hidden="true"></span> Novidades em breve</span>
+        <p class="panel-description">Explore os jogos cadastrados e encontre sua próxima aventura.</p>
+        <a class="account-back" href="{{ route('games.index') }}">Explorar jogos</a>
     </section>
 @endsection

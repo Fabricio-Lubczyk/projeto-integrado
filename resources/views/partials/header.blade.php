@@ -12,6 +12,7 @@
 
         <nav class="main-navigation" aria-label="Navegação principal">
             <a class="navigation-link{{ request()->routeIs('inicio') ? ' is-active' : '' }}" href="{{ route('inicio') }}" @if(request()->routeIs('inicio')) aria-current="page" @endif>Início</a>
+            <a class="navigation-link{{ request()->routeIs('games.*') ? ' is-active' : '' }}" href="{{ route('games.index') }}" @if(request()->routeIs('games.*')) aria-current="page" @endif>Jogos</a>
             <a class="navigation-link" href="{{ route('inicio') }}#sobre-projeto">Sobre o projeto</a>
         </nav>
 
