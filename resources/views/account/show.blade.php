@@ -4,6 +4,7 @@
 
 @section('content')
     <section class="auth-panel" aria-labelledby="titulo-conta">
+        @include('partials.account-navigation')
         <p class="eyebrow"><span aria-hidden="true"></span> Seu espaço</p>
         <h1 id="titulo-conta" class="auth-title">Minha conta<span>.</span></h1>
         <p class="auth-description">Estes são os dados que você usou para entrar na comunidade.</p>

@@ -19,6 +19,8 @@
             </div>
         </dl>
 
+        <a class="account-back" href="{{ route('admin.games.create') }}">Cadastrar jogo</a>
+
         <a class="account-back" href="{{ route('account.show') }}">Ver minha conta</a>
     </section>
 @endsection

@@ -12,6 +12,7 @@
 
         <nav class="main-navigation" aria-label="Navegação principal">
             <a class="navigation-link{{ request()->routeIs('inicio') ? ' is-active' : '' }}" href="{{ route('inicio') }}" @if(request()->routeIs('inicio')) aria-current="page" @endif>Início</a>
+            <a class="navigation-link{{ request()->routeIs('games.*') ? ' is-active' : '' }}" href="{{ route('games.index') }}" @if(request()->routeIs('games.*')) aria-current="page" @endif>Jogos</a>
             <a class="navigation-link" href="{{ route('inicio') }}#sobre-projeto">Sobre o projeto</a>
         </nav>
 
@@ -20,7 +21,7 @@
                 @if (auth()->user()->is_admin)
                     <a class="account-link" href="{{ route('admin.index') }}">Administração</a>
                 @endif
-                <a class="account-link account-name" href="{{ route('account.show') }}">Minha conta</a>
+                <a class="account-link account-name" href="{{ route('account.show') }}" @if(request()->routeIs('account.*')) aria-current="page" @endif>Minha conta</a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="logout-button">Sair</button>

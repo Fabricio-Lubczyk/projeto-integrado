@@ -11,6 +11,9 @@
         @error($name) aria-describedby="erro-{{ $name }}" @enderror
         {{ $attributes->class(['form-input']) }}
     >
+    @if ($type === 'password')
+        <button type="button" class="password-toggle" data-password-toggle aria-controls="{{ $name }}" aria-pressed="false" hidden>Mostrar senha</button>
+    @endif
     @error($name)
         <p id="erro-{{ $name }}" class="field-error">{{ $message }}</p>
     @enderror
