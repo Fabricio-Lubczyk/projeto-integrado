@@ -78,6 +78,31 @@ class GameTaxonomyTest extends TestCase
         $this->assertDatabaseCount('game_platform', 0);
     }
 
+    public function test_storage_failure_rolls_back_game_and_all_relationships(): void
+    {
+        [$genre, $platform] = $this->taxonomy();
+        $this->actingAs(User::factory()->administrator()->create());
+        DB::statement("CREATE TRIGGER fail_platform_link BEFORE INSERT ON game_platform BEGIN SELECT RAISE(FAIL, 'Falha simulada no vínculo'); END");
+        $this->withoutExceptionHandling();
+
+        try {
+            $this->post(route('admin.games.store'), $this->payload([
+                'genres' => [$genre->id], 'platforms' => [$platform->id],
+            ]));
+            $this->fail('O cadastro deveria falhar ao gravar a plataforma.');
+        } catch (QueryException $exception) {
+            $this->assertStringContainsString('Falha simulada no vínculo', $exception->getMessage());
+        } finally {
+            DB::statement('DROP TRIGGER fail_platform_link');
+        }
+
+        $this->assertDatabaseCount('games', 0);
+        $this->assertDatabaseCount('game_genre', 0);
+        $this->assertDatabaseCount('game_platform', 0);
+        $this->assertDatabaseHas('genres', ['id' => $genre->id]);
+        $this->assertDatabaseHas('platforms', ['id' => $platform->id]);
+    }
+
     public function test_guests_and_players_cannot_create_relationships(): void
     {
         [$genre, $platform] = $this->taxonomy();
