@@ -4,6 +4,7 @@
 
 @section('content')
     <section class="auth-panel" aria-labelledby="titulo-conta">
+        @include('partials.account-navigation')
         <p class="eyebrow"><span aria-hidden="true"></span> Seu espaço</p>
         <h1 id="titulo-conta" class="auth-title">Minha conta<span>.</span></h1>
         <p class="auth-description">Estes são os dados que você usou para entrar na comunidade.</p>
@@ -22,10 +23,6 @@
                 <dd>{{ $user->created_at?->format('d/m/Y') }}</dd>
             </div>
         </dl>
-
-        <a class="account-back" href="{{ route('account.edit') }}">Editar dados</a>
-
-        <a class="account-back" href="{{ route('account.password.edit') }}">Alterar senha</a>
 
         <a class="account-back" href="{{ route('inicio') }}">Voltar ao início</a>
     </section>

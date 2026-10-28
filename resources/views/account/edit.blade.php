@@ -4,6 +4,7 @@
 
 @section('content')
     <section class="auth-panel" aria-labelledby="titulo-editar">
+        @include('partials.account-navigation')
         <h1 id="titulo-editar" class="auth-title">Editar conta<span>.</span></h1>
         <p class="auth-description">Altere seu nome ou o e-mail usado para entrar.</p>
         <form action="{{ route('account.update') }}" method="POST" class="auth-form">

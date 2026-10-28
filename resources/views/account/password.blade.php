@@ -4,6 +4,7 @@
 
 @section('content')
     <section class="auth-panel" aria-labelledby="titulo-senha">
+        @include('partials.account-navigation')
         <h1 id="titulo-senha" class="auth-title">Alterar senha<span>.</span></h1>
         <p class="auth-description">Confirme sua senha atual antes de escolher outra.</p>
         <form action="{{ route('account.password.update') }}" method="POST" class="auth-form">
