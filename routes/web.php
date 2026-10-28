@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\PasswordController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,5 +22,10 @@ Route::put('/conta/senha', [PasswordController::class, 'update'])->middleware(['
 Route::get('/admin', [DashboardController::class, 'index'])
     ->middleware(['auth', 'admin'])
     ->name('admin.index');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/jogos/novo', [AdminGameController::class, 'create'])->name('games.create');
+    Route::post('/jogos', [AdminGameController::class, 'store'])->name('games.store');
+});
 
 require __DIR__.'/auth.php';
