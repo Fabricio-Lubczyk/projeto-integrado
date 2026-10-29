@@ -13,8 +13,11 @@ class GameController extends Controller
     public function show(Game $game): View
     {
         $game->load(['genres', 'platforms']);
+        $reviews = $game->reviews()->with('user')->latest()->paginate(10);
+        $hasReviewed = auth()->check()
+            && $game->reviews()->where('user_id', auth()->id())->exists();
 
-        return view('games.show', compact('game'));
+        return view('games.show', compact('game', 'reviews', 'hasReviewed'));
     }
 
     public function index(Request $request): View
