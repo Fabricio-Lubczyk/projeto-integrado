@@ -16,5 +16,21 @@
             <h2 id="sobre-jogo">Sobre o jogo</h2>
             <p class="game-description">{{ $game->description }}</p>
         </section>
+
+        <section class="reviews-section" aria-labelledby="avaliacoes-titulo">
+            <h2 id="avaliacoes-titulo">Avaliações</h2>
+
+            @auth
+                @if ($hasReviewed)
+                    <p class="review-notice" role="status">Você já enviou uma avaliação para este jogo.</p>
+                @else
+                    @include('games.reviews.form')
+                @endif
+            @else
+                @include('games.reviews.invitation')
+            @endauth
+
+            @include('games.reviews.list')
+        </section>
     </article>
 @endsection
