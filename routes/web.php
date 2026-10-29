@@ -5,11 +5,14 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\PasswordController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('inicio');
 Route::get('/jogos', [GameController::class, 'index'])->name('games.index');
 Route::get('/jogos/{game}', [GameController::class, 'show'])->whereNumber('game')->name('games.show');
+Route::post('/jogos/{game}/avaliacoes', [ReviewController::class, 'store'])
+    ->middleware('auth')->whereNumber('game')->name('reviews.store');
 
 Route::get('/conta', [AccountController::class, 'show'])
     ->middleware('auth')
