@@ -45,4 +45,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/jogos/{game}', [AdminGameController::class, 'destroy'])->whereNumber('game')->name('games.destroy');
 });
 
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/games', [App\Http\Controllers\Api\GameController::class, 'index'])->name('games.index');
+    Route::get('/games/{game}', [App\Http\Controllers\Api\GameController::class, 'show'])->name('games.show');
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::post('/games', [App\Http\Controllers\Api\GameController::class, 'store'])->name('games.store');
+        Route::put('/games/{game}', [App\Http\Controllers\Api\GameController::class, 'update'])->name('games.update');
+        Route::delete('/games/{game}', [App\Http\Controllers\Api\GameController::class, 'destroy'])->name('games.destroy');
+    });
+});
+
 require __DIR__.'/auth.php';
