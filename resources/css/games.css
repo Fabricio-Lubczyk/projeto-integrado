@@ -21,6 +21,11 @@
 .admin-game-pagination .account-back { margin-top: 0; }
 .admin-game-pagination p, .admin-pagination-disabled { color: var(--text-secondary); font-size: 13px; }
 .admin-pagination-disabled { display: inline-flex; min-height: 40px; align-items: center; }
+.game-deletion { overflow-wrap: anywhere; }
+.game-deletion .auth-description { margin-top: 24px; }
+.game-deletion .remember-option input { flex-shrink: 0; }
+.danger-button { background: #ffb1ba; color: #2e1018; }
+.danger-button:hover { background: #ffc9cf; }
 
 .taxonomy-fieldset { min-width: 0; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
 .taxonomy-fieldset legend { padding-inline: 6px; }

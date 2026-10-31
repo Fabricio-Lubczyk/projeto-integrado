@@ -35,6 +35,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/jogos', [AdminGameController::class, 'store'])->name('games.store');
     Route::get('/jogos/{game}/editar', [AdminGameController::class, 'edit'])->whereNumber('game')->name('games.edit');
     Route::put('/jogos/{game}', [AdminGameController::class, 'update'])->whereNumber('game')->name('games.update');
+    Route::get('/jogos/{game}/excluir', [AdminGameController::class, 'delete'])->whereNumber('game')->name('games.delete');
     Route::delete('/jogos/{game}', [AdminGameController::class, 'destroy'])->whereNumber('game')->name('games.destroy');
 });
 

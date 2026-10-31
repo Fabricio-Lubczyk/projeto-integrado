@@ -72,6 +72,11 @@ class GameController extends Controller
         return to_route('admin.games.index')->with('status', 'Jogo atualizado no catálogo.');
     }
 
+    public function delete(Game $game): View
+    {
+        return view('admin.games.delete', compact('game'));
+    }
+
     public function destroy(Request $request, Game $game): RedirectResponse
     {
         $request->validate([
