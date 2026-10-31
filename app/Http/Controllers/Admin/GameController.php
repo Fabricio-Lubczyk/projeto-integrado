@@ -71,4 +71,17 @@ class GameController extends Controller
 
         return to_route('admin.games.index')->with('status', 'Jogo atualizado no catálogo.');
     }
+
+    public function destroy(Request $request, Game $game): RedirectResponse
+    {
+        $request->validate([
+            'confirm' => ['accepted'],
+        ], [
+            'confirm.accepted' => 'Confirme a exclusão do jogo e de suas avaliações.',
+        ]);
+
+        $game->delete();
+
+        return to_route('admin.games.index')->with('status', 'Jogo e suas avaliações excluídos do catálogo.');
+    }
 }
