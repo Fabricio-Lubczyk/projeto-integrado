@@ -204,6 +204,81 @@ class AdminGameUpdateTest extends TestCase
         $this->assertSame([$platform->id], $game->fresh()->platforms->modelKeys());
     }
 
+    public function test_non_array_relationship_errors_render_the_edit_form_without_a_server_error(): void
+    {
+        $game = Game::factory()->create(['title' => 'Jogo original']);
+        $genre = Genre::create(['name' => 'Aventura']);
+        $platform = Platform::create(['name' => 'PC']);
+        $game->genres()->attach($genre);
+        $game->platforms()->attach($platform);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->from(route('admin.games.edit', $game))
+            ->put(route('admin.games.update', $game), $this->payload(['genres' => 'invalido', 'platforms' => 'invalido']))
+            ->assertRedirect(route('admin.games.edit', $game))
+            ->assertSessionHasErrors(['genres', 'platforms'])
+            ->assertSessionHasInput('genres', 'invalido')
+            ->assertSessionHasInput('platforms', 'invalido');
+
+        $this->get(route('admin.games.edit', $game))->assertOk()
+            ->assertSee('Selecione opções válidas para gêneros.')
+            ->assertSee('Selecione opções válidas para plataformas.');
+
+        $this->assertDatabaseHas('games', ['id' => $game->id, 'title' => 'Jogo original']);
+        $this->assertDatabaseHas('game_genre', ['game_id' => $game->id, 'genre_id' => $genre->id]);
+        $this->assertDatabaseHas('game_platform', ['game_id' => $game->id, 'platform_id' => $platform->id]);
+    }
+
+    public function test_array_values_in_text_and_date_fields_render_validation_errors_without_changing_data(): void
+    {
+        $game = Game::factory()->create([
+            'title' => 'Jogo original',
+            'developer' => 'Estudio original',
+            'released_on' => '2018-06-23',
+            'description' => 'Descricao original do jogo.',
+        ]);
+        $genre = Genre::create(['name' => 'Aventura']);
+        $platform = Platform::create(['name' => 'PC']);
+        $game->genres()->attach($genre);
+        $game->platforms()->attach($platform);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->from(route('admin.games.edit', $game))
+            ->put(route('admin.games.update', $game), $this->payload([
+                'title' => ['invalido'],
+                'developer' => ['invalido'],
+                'released_on' => ['invalido'],
+                'description' => ['invalido'],
+                'genres' => [$genre->id],
+                'platforms' => [$platform->id],
+            ]))->assertRedirect(route('admin.games.edit', $game))
+            ->assertSessionHasErrors(['title', 'developer', 'released_on', 'description'])
+            ->assertSessionHasInput('title', ['invalido'])
+            ->assertSessionHasInput('developer', ['invalido'])
+            ->assertSessionHasInput('released_on', ['invalido'])
+            ->assertSessionHasInput('description', ['invalido']);
+
+        $html = $this->get(route('admin.games.edit', $game))->assertOk()
+            ->assertSee('Informe um texto válido para título.')
+            ->assertSee('Informe um texto válido para desenvolvedora.')
+            ->assertSee('Informe uma data de lançamento válida.')
+            ->assertSee('Informe um texto válido para descrição.')
+            ->getContent();
+
+        $this->assertChecked($html, 'genres', $genre->id);
+        $this->assertChecked($html, 'platforms', $platform->id);
+        $this->assertDatabaseHas('games', [
+            'id' => $game->id,
+            'title' => 'Jogo original',
+            'developer' => 'Estudio original',
+            'description' => 'Descricao original do jogo.',
+        ]);
+        $this->assertSame('2018-06-23', $game->fresh()->released_on->format('Y-m-d'));
+        $this->assertDatabaseCount('games', 1);
+        $this->assertDatabaseHas('game_genre', ['game_id' => $game->id, 'genre_id' => $genre->id]);
+        $this->assertDatabaseHas('game_platform', ['game_id' => $game->id, 'platform_id' => $platform->id]);
+    }
+
     public function test_validation_error_preserves_submitted_values_and_new_selections(): void
     {
         $game = Game::factory()->create();
