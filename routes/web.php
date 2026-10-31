@@ -33,6 +33,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/jogos', [AdminGameController::class, 'index'])->name('games.index');
     Route::get('/jogos/novo', [AdminGameController::class, 'create'])->name('games.create');
     Route::post('/jogos', [AdminGameController::class, 'store'])->name('games.store');
+    Route::put('/jogos/{game}', [AdminGameController::class, 'update'])->whereNumber('game')->name('games.update');
 });
 
 require __DIR__.'/auth.php';

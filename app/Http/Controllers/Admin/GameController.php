@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGameRequest;
+use App\Http\Requests\UpdateGameRequest;
 use App\Models\Game;
 use App\Models\Genre;
 use App\Models\Platform;
@@ -47,5 +48,16 @@ class GameController extends Controller
         });
 
         return to_route('admin.games.create')->with('status', 'Jogo cadastrado no catálogo.');
+    }
+
+    public function update(UpdateGameRequest $request, Game $game): RedirectResponse
+    {
+        DB::transaction(function () use ($request, $game) {
+            $game->update($request->safe()->except(['genres', 'platforms']));
+            $game->genres()->sync($request->validated('genres', []));
+            $game->platforms()->sync($request->validated('platforms', []));
+        });
+
+        return to_route('admin.games.index')->with('status', 'Jogo atualizado no catálogo.');
     }
 }
