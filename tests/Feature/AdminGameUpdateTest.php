@@ -73,6 +73,60 @@ class AdminGameUpdateTest extends TestCase
         $this->assertNotChecked($html, 'platforms', $otherPlatform->id);
     }
 
+    public function test_admin_can_update_all_fields_and_keep_the_same_title(): void
+    {
+        $game = Game::factory()->create(['title' => 'Mesmo titulo']);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->put(route('admin.games.update', $game), $this->payload([
+            'title' => '  Mesmo titulo  ',
+            'developer' => '  Novo estudio  ',
+            'description' => '  Uma nova descricao para o jogo.  ',
+        ]))->assertSessionHasNoErrors()->assertRedirect(route('admin.games.index'))->assertSessionHas('status');
+
+        $this->assertDatabaseCount('games', 1);
+        $this->assertDatabaseHas('games', [
+            'id' => $game->id,
+            'title' => 'Mesmo titulo',
+            'developer' => 'Novo estudio',
+            'description' => 'Uma nova descricao para o jogo.',
+        ]);
+        $this->assertSame('2020-03-15', $game->fresh()->released_on->format('Y-m-d'));
+    }
+
+    public function test_admin_can_change_title_and_clear_the_optional_release_date(): void
+    {
+        $game = Game::factory()->create(['title' => 'Titulo antigo', 'released_on' => '2017-02-24']);
+
+        $this->actingAs(User::factory()->administrator()->create())
+            ->put(route('admin.games.update', $game), $this->payload(['released_on' => '']))
+            ->assertSessionHasNoErrors()->assertRedirect(route('admin.games.index'));
+
+        $this->assertDatabaseHas('games', ['id' => $game->id, 'title' => 'Jogo atualizado', 'released_on' => null]);
+    }
+
+    public function test_invalid_fields_and_another_games_title_do_not_change_the_game(): void
+    {
+        $game = Game::factory()->create(['title' => 'Jogo original', 'description' => 'Descricao original.']);
+        Game::factory()->create(['title' => 'Titulo ocupado']);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->put(route('admin.games.update', $game), $this->payload([
+            'title' => 'Titulo ocupado', 'developer' => '', 'released_on' => '2026-02-30', 'description' => '',
+        ]))->assertSessionHasErrors(['title', 'developer', 'released_on', 'description']);
+
+        $this->put(route('admin.games.update', $game), $this->payload([
+            'title' => str_repeat('a', 151), 'developer' => str_repeat('a', 121), 'description' => str_repeat('a', 5001),
+        ]))->assertSessionHasErrors(['title', 'developer', 'description']);
+
+        $this->put(route('admin.games.update', $game), $this->payload([
+            'title' => '   ', 'developer' => ['valor invalido'], 'released_on' => '15/03/2020',
+        ]))->assertSessionHasErrors(['title', 'developer', 'released_on']);
+
+        $this->assertDatabaseCount('games', 2);
+        $this->assertDatabaseHas('games', ['id' => $game->id, 'title' => 'Jogo original', 'description' => 'Descricao original.']);
+    }
+
     public function test_missing_game_returns_not_found_for_edit_and_update(): void
     {
         $this->actingAs(User::factory()->administrator()->create());
