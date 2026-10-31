@@ -204,6 +204,58 @@ class AdminGameUpdateTest extends TestCase
         $this->assertSame([$platform->id], $game->fresh()->platforms->modelKeys());
     }
 
+    public function test_validation_error_preserves_submitted_values_and_new_selections(): void
+    {
+        $game = Game::factory()->create();
+        $oldGenre = Genre::create(['name' => 'Aventura']);
+        $newGenre = Genre::create(['name' => 'RPG']);
+        $oldPlatform = Platform::create(['name' => 'PC']);
+        $newPlatform = Platform::create(['name' => 'Xbox']);
+        $game->genres()->attach($oldGenre);
+        $game->platforms()->attach($oldPlatform);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->from(route('admin.games.edit', $game))
+            ->put(route('admin.games.update', $game), $this->payload([
+                'title' => '', 'genres' => [$newGenre->id], 'platforms' => [$newPlatform->id],
+            ]))->assertRedirect(route('admin.games.edit', $game))
+            ->assertSessionHasErrors('title')
+            ->assertSessionHasInput('genres', [$newGenre->id])
+            ->assertSessionHasInput('platforms', [$newPlatform->id]);
+
+        $html = $this->get(route('admin.games.edit', $game))->assertOk()
+            ->assertSee('value="Novo estudio"', false)
+            ->assertSee('value="2020-03-15"', false)
+            ->assertSee('Uma nova descricao para o jogo.')
+            ->getContent();
+
+        $this->assertMatchesRegularExpression('/<input(?=[^>]*name="title")(?=[^>]*value="")[^>]*>/', $html);
+        $this->assertChecked($html, 'genres', $newGenre->id);
+        $this->assertChecked($html, 'platforms', $newPlatform->id);
+        $this->assertNotChecked($html, 'genres', $oldGenre->id);
+        $this->assertNotChecked($html, 'platforms', $oldPlatform->id);
+    }
+
+    public function test_unchecking_every_relationship_stays_unchecked_after_a_validation_error(): void
+    {
+        $game = Game::factory()->create();
+        $genre = Genre::create(['name' => 'Aventura']);
+        $platform = Platform::create(['name' => 'PC']);
+        $game->genres()->attach($genre);
+        $game->platforms()->attach($platform);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->from(route('admin.games.edit', $game))
+            ->put(route('admin.games.update', $game), $this->payload(['title' => '']))
+            ->assertRedirect(route('admin.games.edit', $game))->assertSessionHasErrors('title');
+
+        $html = $this->get(route('admin.games.edit', $game))->assertOk()->getContent();
+        $this->assertNotChecked($html, 'genres', $genre->id);
+        $this->assertNotChecked($html, 'platforms', $platform->id);
+        $this->assertDatabaseHas('game_genre', ['game_id' => $game->id, 'genre_id' => $genre->id]);
+        $this->assertDatabaseHas('game_platform', ['game_id' => $game->id, 'platform_id' => $platform->id]);
+    }
+
     public function test_relationship_storage_failure_rolls_back_attributes_and_all_links(): void
     {
         $game = Game::factory()->create(['title' => 'Jogo original', 'description' => 'Descricao original.']);
