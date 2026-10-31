@@ -56,6 +56,22 @@ class AdminGameDeleteTest extends TestCase
         $this->assertGameAndRelationshipsExist($game, $genre, $platform, $review);
     }
 
+    public function test_missing_or_rejected_confirmation_preserves_the_game_and_its_data(): void
+    {
+        [$game, $genre, $platform, $review] = $this->gameWithRelationships();
+        $this->actingAs(User::factory()->administrator()->create());
+
+        foreach ([[], ['confirm' => '0'], ['confirm' => false], ['confirm' => 'nao']] as $data) {
+            $this->from(route('admin.games.delete', $game))
+                ->delete(route('admin.games.destroy', $game), $data)
+                ->assertRedirect(route('admin.games.delete', $game))->assertSessionHasErrors('confirm');
+
+            $this->assertGameAndRelationshipsExist($game, $genre, $platform, $review);
+        }
+
+        $this->get(route('admin.games.delete', $game))->assertOk()->assertSee($game->title);
+    }
+
     public function test_confirmed_delete_cascades_reviews_and_links_but_preserves_shared_taxonomies(): void
     {
         [$game, $genre, $platform, $review] = $this->gameWithRelationships();
@@ -96,6 +112,38 @@ class AdminGameDeleteTest extends TestCase
 
         $this->assertDatabaseCount('games', 0);
         $this->assertDatabaseCount('reviews', 0);
+    }
+
+    public function test_missing_game_returns_not_found_for_confirmation_and_delete(): void
+    {
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->get(route('admin.games.delete', 99999))->assertNotFound();
+        $this->delete(route('admin.games.destroy', 99999), ['confirm' => '1'])->assertNotFound();
+
+        $this->assertDatabaseCount('games', 0);
+    }
+
+    public function test_delete_requires_a_valid_csrf_token_with_normal_middleware(): void
+    {
+        [$game, $genre, $platform, $review] = $this->gameWithRelationships();
+        $this->actingAs(User::factory()->administrator()->create());
+        $environment = $this->app->environment();
+        $this->app->instance('env', 'local');
+
+        try {
+            $this->withSession(['_token' => 'token-da-sessao'])
+                ->delete(route('admin.games.destroy', $game), ['confirm' => '1'])->assertStatus(419);
+            $this->assertGameAndRelationshipsExist($game, $genre, $platform, $review);
+
+            $this->withSession(['_token' => 'token-da-sessao'])
+                ->delete(route('admin.games.destroy', $game), ['confirm' => '1', '_token' => 'token-da-sessao'])
+                ->assertSessionHasNoErrors()->assertRedirect(route('admin.games.index'));
+        } finally {
+            $this->app->instance('env', $environment);
+        }
+
+        $this->assertDatabaseMissing('games', ['id' => $game->id]);
     }
 
     private function gameWithRelationships(): array
