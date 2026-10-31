@@ -30,8 +30,13 @@ Route::get('/admin', [DashboardController::class, 'index'])
     ->name('admin.index');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/jogos', [AdminGameController::class, 'index'])->name('games.index');
     Route::get('/jogos/novo', [AdminGameController::class, 'create'])->name('games.create');
     Route::post('/jogos', [AdminGameController::class, 'store'])->name('games.store');
+    Route::get('/jogos/{game}/editar', [AdminGameController::class, 'edit'])->whereNumber('game')->name('games.edit');
+    Route::put('/jogos/{game}', [AdminGameController::class, 'update'])->whereNumber('game')->name('games.update');
+    Route::get('/jogos/{game}/excluir', [AdminGameController::class, 'delete'])->whereNumber('game')->name('games.delete');
+    Route::delete('/jogos/{game}', [AdminGameController::class, 'destroy'])->whereNumber('game')->name('games.destroy');
 });
 
 require __DIR__.'/auth.php';
