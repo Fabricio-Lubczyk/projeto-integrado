@@ -38,7 +38,7 @@
                 </div>
             @endforelse
         </div>
-        <div class="catalog-pagination">{{ $games->links() }}</div>
+        <div class="catalog-pagination">{{ $games->links('admin.games._pagination') }}</div>
         <a class="account-back" href="{{ route('admin.index') }}">Voltar para administração</a>
     </section>
 @endsection

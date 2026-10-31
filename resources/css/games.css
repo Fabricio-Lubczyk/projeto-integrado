@@ -15,6 +15,10 @@
 .game-detail section { margin-top: 36px; }
 .game-description { margin-top: 16px; color: var(--text-secondary); line-height: 1.8; white-space: pre-line; }
 .game-card h2 a { text-decoration: none; }
+.admin-game-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.admin-game-pagination .account-back { margin-top: 0; }
+.admin-game-pagination p, .admin-pagination-disabled { color: var(--text-secondary); font-size: 13px; }
+.admin-pagination-disabled { display: inline-flex; min-height: 40px; align-items: center; }
 
 .taxonomy-fieldset { min-width: 0; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
 .taxonomy-fieldset legend { padding-inline: 6px; }
