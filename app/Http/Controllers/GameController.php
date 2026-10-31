@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Genre;
 use App\Models\Platform;
+use App\Services\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class GameController extends Controller
 {
-    public function show(Game $game): View
+    public function show(Game $game, ReviewService $reviewService): View
     {
         $game->load(['genres', 'platforms']);
         $reviews = $game->reviews()->with('user')->latest()->paginate(10);
-        $reviewCount = $game->reviews()->count();
-        $reviewAverage = $game->reviews()->avg('rating');
+        [$reviewCount, $reviewAverage] = $reviewService->summary($game);
         $hasReviewed = auth()->check()
             && $game->reviews()->where('user_id', auth()->id())->exists();
 
