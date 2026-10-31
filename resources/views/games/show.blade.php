@@ -19,6 +19,11 @@
 
         <section class="reviews-section" aria-labelledby="avaliacoes-titulo">
             <h2 id="avaliacoes-titulo">Avaliações</h2>
+            @if ($reviewCount)
+                <p>{{ number_format($reviewAverage, 1, ',', '.') }} de 5 · {{ $reviewCount }} {{ $reviewCount === 1 ? 'avaliação' : 'avaliações' }}</p>
+            @else
+                <p>Ainda sem avaliações.</p>
+            @endif
 
             @auth
                 @if ($hasReviewed)

@@ -14,6 +14,12 @@ Route::get('/jogos/{game}', [GameController::class, 'show'])->whereNumber('game'
 Route::post('/jogos/{game}/avaliacoes', [ReviewController::class, 'store'])
     ->middleware('auth')->whereNumber('game')->name('reviews.store');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/avaliacoes/{review}/editar', [ReviewController::class, 'edit'])->name('reviews.edit');
+    Route::put('/avaliacoes/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/avaliacoes/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+
 Route::get('/conta', [AccountController::class, 'show'])
     ->middleware('auth')
     ->name('account.show');

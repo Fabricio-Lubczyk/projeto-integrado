@@ -14,10 +14,12 @@ class GameController extends Controller
     {
         $game->load(['genres', 'platforms']);
         $reviews = $game->reviews()->with('user')->latest()->paginate(10);
+        $reviewCount = $game->reviews()->count();
+        $reviewAverage = $game->reviews()->avg('rating');
         $hasReviewed = auth()->check()
             && $game->reviews()->where('user_id', auth()->id())->exists();
 
-        return view('games.show', compact('game', 'reviews', 'hasReviewed'));
+        return view('games.show', compact('game', 'reviews', 'hasReviewed', 'reviewCount', 'reviewAverage'));
     }
 
     public function index(Request $request): View

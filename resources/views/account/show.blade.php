@@ -24,6 +24,16 @@
             </div>
         </dl>
 
+        <section aria-labelledby="minhas-avaliacoes">
+            <h2 id="minhas-avaliacoes">Minhas avaliações</h2>
+            @forelse ($reviews as $review)
+                <p><a href="{{ route('games.show', $review->game) }}">{{ $review->game->title }}</a> — {{ $review->rating }} de 5</p>
+            @empty
+                <p>Você ainda não avaliou nenhum jogo.</p>
+            @endforelse
+            {{ $reviews->links() }}
+        </section>
+
         <a class="account-back" href="{{ route('inicio') }}">Voltar ao início</a>
     </section>
 @endsection

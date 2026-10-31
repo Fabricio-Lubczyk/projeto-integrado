@@ -30,6 +30,9 @@ class AccountController extends Controller
 
     public function show(Request $request): View
     {
-        return view('account.show', ['user' => $request->user()]);
+        return view('account.show', [
+            'user' => $request->user(),
+            'reviews' => $request->user()->reviews()->with('game')->latest()->paginate(10),
+        ]);
     }
 }
