@@ -56,6 +56,48 @@ class AdminGameDeleteTest extends TestCase
         $this->assertGameAndRelationshipsExist($game, $genre, $platform, $review);
     }
 
+    public function test_confirmed_delete_cascades_reviews_and_links_but_preserves_shared_taxonomies(): void
+    {
+        [$game, $genre, $platform, $review] = $this->gameWithRelationships();
+        $otherGame = Game::factory()->create(['title' => 'Outro jogo']);
+        $otherGame->genres()->attach($genre);
+        $otherGame->platforms()->attach($platform);
+        $otherReview = Review::factory()->create(['game_id' => $otherGame->id, 'user_id' => $review->user_id]);
+        $secondReview = Review::factory()->create(['game_id' => $game->id]);
+
+        $this->actingAs(User::factory()->administrator()->create())
+            ->delete(route('admin.games.destroy', $game), ['confirm' => '1'])
+            ->assertSessionHasNoErrors()->assertRedirect(route('admin.games.index'))->assertSessionHas('status');
+
+        $this->assertDatabaseMissing('games', ['id' => $game->id]);
+        $this->assertDatabaseMissing('reviews', ['id' => $review->id]);
+        $this->assertDatabaseMissing('reviews', ['id' => $secondReview->id]);
+        $this->assertDatabaseMissing('game_genre', ['game_id' => $game->id]);
+        $this->assertDatabaseMissing('game_platform', ['game_id' => $game->id]);
+        $this->assertGameAndRelationshipsExist($otherGame, $genre, $platform, $otherReview);
+        $this->assertDatabaseHas('users', ['id' => $review->user_id]);
+        $this->assertDatabaseHas('users', ['id' => $secondReview->user_id]);
+        $this->assertDatabaseCount('games', 1);
+        $this->assertDatabaseCount('reviews', 1);
+        $this->assertDatabaseCount('game_genre', 1);
+        $this->assertDatabaseCount('game_platform', 1);
+        $this->assertDatabaseCount('genres', 1);
+        $this->assertDatabaseCount('platforms', 1);
+        $this->get(route('games.show', $game))->assertNotFound();
+    }
+
+    public function test_admin_can_delete_a_game_without_reviews_or_relationships(): void
+    {
+        $game = Game::factory()->create();
+
+        $this->actingAs(User::factory()->administrator()->create())
+            ->delete(route('admin.games.destroy', $game), ['confirm' => 'on'])
+            ->assertSessionHasNoErrors()->assertRedirect(route('admin.games.index'));
+
+        $this->assertDatabaseCount('games', 0);
+        $this->assertDatabaseCount('reviews', 0);
+    }
+
     private function gameWithRelationships(): array
     {
         $game = Game::factory()->create(['title' => 'Jogo para excluir']);
