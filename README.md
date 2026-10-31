@@ -1,59 +1,148 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Projeto Integrado — Catálogo de Jogos
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplicação web desenvolvida para o projeto integrador da faculdade. A proposta é criar um espaço onde jogadores possam descobrir jogos e compartilhar suas experiências por meio de avaliações.
 
-## About Laravel
+Nesta etapa, o projeto oferece contas de usuários, administração de jogos e um catálogo público com gêneros e plataformas. As avaliações ainda serão implementadas.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Funcionalidades disponíveis
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Cadastro, login e logout de usuários.
+- Consulta e edição dos dados da conta e alteração de senha.
+- Área administrativa protegida, acessível apenas a administradores.
+- Cadastro de jogos com título, desenvolvedora, descrição e data de lançamento opcional.
+- Associação de vários gêneros e plataformas a cada jogo.
+- Catálogo público com busca por título, filtros combinados por gênero e plataforma e paginação que preserva os filtros.
+- Exibição de gêneros nos cartões e de gêneros e plataformas nos detalhes de cada jogo.
+- Formulário que preserva os dados e as opções selecionadas quando há erro de validação.
+- Layout adaptado para celular e computador.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tecnologias
 
-## Learning Laravel
+- PHP e Laravel 12.
+- Blade para as páginas renderizadas no servidor.
+- CSS e JavaScript, com Vite para compilar os arquivos do frontend.
+- SQLite para o banco de dados local.
+- Eloquent para os modelos e relacionamentos.
+- PHPUnit para os testes automatizados e Laravel Pint para formatação do PHP.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+A configuração do PostgreSQL no Neon está prevista para uma etapa futura. O fluxo local descrito abaixo utiliza SQLite.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Requisitos
 
-## Laravel Sponsors
+- PHP 8.2 ou superior, com as extensões exigidas pelo Composer e o driver `pdo_sqlite` habilitado.
+- Composer 2.
+- Node.js 22.12 ou superior e npm.
+- Git.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalação local
 
-### Premium Partners
+Clone o repositório e entre na pasta:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone https://github.com/Fabricio-Lubczyk/projeto-integrado.git
+cd projeto-integrado
+```
 
-## Contributing
+Para acessar a implementação de gêneros e plataformas desta entrega:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git switch feat/generos-plataformas
+```
 
-## Code of Conduct
+Instale as dependências e prepare a configuração local:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer install
+php -r "file_exists('.env') || copy('.env.example', '.env');"
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+O `.env.example` já utiliza `DB_CONNECTION=sqlite`. Crie o arquivo do banco, execute as migrations e carregue os gêneros e plataformas de exemplo:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
+php artisan migrate
+php artisan db:seed --class=GenreSeeder
+php artisan db:seed --class=PlatformSeeder
+```
 
-## License
+Esses dois seeders podem ser executados novamente sem duplicar as opções. Eles incluem Ação, Aventura, Estratégia, Esporte e RPG, além de PC, PlayStation, Xbox e Nintendo Switch. Jogos devem ser cadastrados pela administração.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Instale as dependências do frontend e compile os arquivos:
+
+```bash
+npm ci
+npm run build
+```
+
+Inicie a aplicação:
+
+```bash
+php artisan serve
+```
+
+Acesse <http://localhost:8000>. Durante o desenvolvimento, você também pode usar `composer run dev` para executar o servidor Laravel e o Vite juntos, com atualização dos arquivos do frontend.
+
+## Acesso à administração
+
+Crie uma conta pela interface de cadastro. Novas contas são de jogadores e não recebem acesso administrativo automaticamente.
+
+Para promover uma conta no seu ambiente local, abra o Tinker:
+
+```bash
+php artisan tinker
+```
+
+Execute o código abaixo, substituindo o e-mail pelo da conta cadastrada:
+
+```php
+$user = App\Models\User::where('email', 'seu-email@exemplo.com')->firstOrFail();
+$user->is_admin = true;
+$user->save();
+```
+
+Saia com `exit` e acesse `/admin`. O formulário de cadastro de jogos fica em `/admin/jogos/novo`.
+
+## Organização dos dados
+
+Cada jogo pode ter vários gêneros e estar disponível em várias plataformas. Os relacionamentos são muitos para muitos:
+
+- `games`: dados dos jogos.
+- `genres`: nomes únicos dos gêneros.
+- `platforms`: nomes únicos das plataformas.
+- `game_genre`: vínculos entre jogos e gêneros.
+- `game_platform`: vínculos entre jogos e plataformas.
+
+As tabelas intermediárias usam chaves estrangeiras e impedem vínculos duplicados. O cadastro do jogo e de seus vínculos acontece em uma transação. No catálogo, as relações são carregadas antecipadamente para evitar consultas individuais para cada jogo.
+
+## Testes e verificações
+
+Com o ambiente configurado, execute a suíte completa:
+
+```bash
+composer test
+```
+
+Os testes usam SQLite em memória, conforme `phpunit.xml`, e cobrem autenticação, conta, permissões administrativas, cadastro e exibição de jogos, vínculos, filtros combinados, paginação e dados inválidos. Também verificam a repetição dos seeders, o rollback em caso de falha no cadastro e a quantidade de consultas do catálogo.
+
+Para executar apenas os testes de gêneros e plataformas:
+
+```bash
+php artisan test --filter=GameTaxonomyTest
+```
+
+Para verificar a formatação PHP e compilar o frontend:
+
+```bash
+vendor/bin/pint --test
+npm run build
+```
+
+Se aparecer `could not find driver` ao acessar o banco ou executar os testes, confira se a extensão `pdo_sqlite` está habilitada no PHP usado pelo terminal.
+
+## Próximas etapas
+
+- Implementar avaliações feitas pelos jogadores.
+- Configurar PostgreSQL no Neon com o grupo.
+
+Essas funcionalidades ainda não fazem parte desta entrega. O projeto utiliza páginas Blade e não implementa uma API nesta etapa.

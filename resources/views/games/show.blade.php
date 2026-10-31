@@ -9,10 +9,28 @@
         <dl class="account-details">
             <div><dt>Desenvolvedora</dt><dd>{{ $game->developer }}</dd></div>
             <div><dt>Lançamento</dt><dd>{{ $game->released_on?->format('d/m/Y') ?? 'Não informado' }}</dd></div>
+            <div><dt>Gêneros</dt><dd>{{ $game->genres->pluck('name')->join(', ') ?: 'Nenhum gênero informado.' }}</dd></div>
+            <div><dt>Plataformas</dt><dd>{{ $game->platforms->pluck('name')->join(', ') ?: 'Nenhuma plataforma informada.' }}</dd></div>
         </dl>
         <section aria-labelledby="sobre-jogo">
             <h2 id="sobre-jogo">Sobre o jogo</h2>
             <p class="game-description">{{ $game->description }}</p>
+        </section>
+
+        <section class="reviews-section" aria-labelledby="avaliacoes-titulo">
+            <h2 id="avaliacoes-titulo">Avaliações</h2>
+
+            @auth
+                @if ($hasReviewed)
+                    <p class="review-notice" role="status">Você já enviou uma avaliação para este jogo.</p>
+                @else
+                    @include('games.reviews.form')
+                @endif
+            @else
+                @include('games.reviews.invitation')
+            @endauth
+
+            @include('games.reviews.list')
         </section>
     </article>
 @endsection

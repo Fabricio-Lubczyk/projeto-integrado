@@ -15,3 +15,24 @@
 .game-detail section { margin-top: 36px; }
 .game-description { margin-top: 16px; color: var(--text-secondary); line-height: 1.8; white-space: pre-line; }
 .game-card h2 a { text-decoration: none; }
+.admin-game-actions { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.admin-game-actions .account-back { margin-top: 16px; }
+.admin-game-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.admin-game-pagination .account-back { margin-top: 0; }
+.admin-game-pagination p, .admin-pagination-disabled { color: var(--text-secondary); font-size: 13px; }
+.admin-pagination-disabled { display: inline-flex; min-height: 40px; align-items: center; }
+.game-deletion { overflow-wrap: anywhere; }
+.game-deletion .auth-description { margin-top: 24px; }
+.game-deletion .remember-option input { flex-shrink: 0; }
+.danger-button { background: #ffb1ba; color: #2e1018; }
+.danger-button:hover { background: #ffc9cf; }
+
+.taxonomy-fieldset { min-width: 0; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.taxonomy-fieldset legend { padding-inline: 6px; }
+.taxonomy-options { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.taxonomy-option { display: flex; align-items: center; gap: 8px; overflow-wrap: anywhere; }
+.taxonomy-option input { flex-shrink: 0; }
+.game-tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin-top: 16px; }
+.game-tags li { max-width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 13px; color: var(--text-secondary); }
+.catalog-search .form-field { min-width: 0; }
+@media (max-width: 600px) { .catalog-search .form-field { flex-basis: 100%; } }
