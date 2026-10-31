@@ -30,6 +30,7 @@ Route::get('/admin', [DashboardController::class, 'index'])
     ->name('admin.index');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/jogos', [AdminGameController::class, 'index'])->name('games.index');
     Route::get('/jogos/novo', [AdminGameController::class, 'create'])->name('games.create');
     Route::post('/jogos', [AdminGameController::class, 'store'])->name('games.store');
 });

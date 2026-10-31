@@ -13,6 +13,13 @@ use Illuminate\View\View;
 
 class GameController extends Controller
 {
+    public function index(): View
+    {
+        $games = Game::query()->orderBy('title')->orderBy('id')->paginate(12);
+
+        return view('admin.games.index', compact('games'));
+    }
+
     public function create(): View
     {
         return view('admin.games.create', [
