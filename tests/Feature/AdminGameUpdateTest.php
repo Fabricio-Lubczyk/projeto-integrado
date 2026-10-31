@@ -127,6 +127,114 @@ class AdminGameUpdateTest extends TestCase
         $this->assertDatabaseHas('games', ['id' => $game->id, 'title' => 'Jogo original', 'description' => 'Descricao original.']);
     }
 
+    public function test_update_replaces_relationships_and_missing_checkboxes_remove_all_links(): void
+    {
+        $game = Game::factory()->create([
+            'title' => 'Titulo antigo',
+            'developer' => 'Estudio antigo',
+            'description' => 'Descricao antiga do jogo.',
+        ]);
+        $oldGenre = Genre::create(['name' => 'Aventura']);
+        $newGenre = Genre::create(['name' => 'RPG']);
+        $oldPlatform = Platform::create(['name' => 'PC']);
+        $newPlatform = Platform::create(['name' => 'Xbox']);
+        $game->genres()->attach($oldGenre);
+        $game->platforms()->attach($oldPlatform);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        $this->put(route('admin.games.update', $game), $this->payload([
+            'genres' => [$newGenre->id], 'platforms' => [$newPlatform->id],
+        ]))->assertSessionHasNoErrors()->assertRedirect(route('admin.games.index'));
+
+        $this->assertSame([$newGenre->id], $game->fresh()->genres->modelKeys());
+        $this->assertSame([$newPlatform->id], $game->fresh()->platforms->modelKeys());
+
+        $this->get(route('games.index'))->assertOk()
+            ->assertSee('Jogo atualizado')->assertSee('Novo estudio')
+            ->assertSee('<li>RPG</li>', false)
+            ->assertDontSee('Titulo antigo')->assertDontSee('Estudio antigo')
+            ->assertDontSee('<li>Aventura</li>', false);
+        $this->get(route('games.show', $game))->assertOk()
+            ->assertSee('Jogo atualizado')->assertSee('Novo estudio')
+            ->assertSee('Uma nova descricao para o jogo.')
+            ->assertSee('<dd>RPG</dd>', false)->assertSee('<dd>Xbox</dd>', false)
+            ->assertDontSee('Titulo antigo')->assertDontSee('Estudio antigo')
+            ->assertDontSee('Descricao antiga do jogo.')
+            ->assertDontSee('<dd>Aventura</dd>', false)->assertDontSee('<dd>PC</dd>', false);
+        $this->get(route('games.index', ['genre' => $newGenre->id, 'platform' => $newPlatform->id]))
+            ->assertOk()->assertSee('Jogo atualizado')
+            ->assertViewHas('games', fn ($games) => $games->total() === 1);
+        $this->get(route('games.index', ['genre' => $oldGenre->id]))
+            ->assertOk()->assertDontSee('Jogo atualizado')
+            ->assertViewHas('games', fn ($games) => $games->total() === 0);
+        $this->get(route('games.index', ['platform' => $oldPlatform->id]))
+            ->assertOk()->assertDontSee('Jogo atualizado')
+            ->assertViewHas('games', fn ($games) => $games->total() === 0);
+
+        $this->put(route('admin.games.update', $game), $this->payload())
+            ->assertSessionHasNoErrors()->assertRedirect(route('admin.games.index'));
+
+        $this->assertDatabaseCount('game_genre', 0);
+        $this->assertDatabaseCount('game_platform', 0);
+        $this->assertDatabaseCount('genres', 2);
+        $this->assertDatabaseCount('platforms', 2);
+    }
+
+    public function test_invalid_relationships_are_rejected_without_changing_existing_links(): void
+    {
+        $game = Game::factory()->create(['title' => 'Jogo original']);
+        $genre = Genre::create(['name' => 'Aventura']);
+        $platform = Platform::create(['name' => 'PC']);
+        $game->genres()->attach($genre);
+        $game->platforms()->attach($platform);
+        $this->actingAs(User::factory()->administrator()->create());
+
+        foreach ([['bad'], [99999], [null]] as $ids) {
+            $this->put(route('admin.games.update', $game), $this->payload(['genres' => $ids, 'platforms' => $ids]))
+                ->assertSessionHasErrors(['genres.0', 'platforms.0']);
+        }
+        $this->put(route('admin.games.update', $game), $this->payload([
+            'genres' => [$genre->id, $genre->id], 'platforms' => [$platform->id, $platform->id],
+        ]))->assertSessionHasErrors(['genres.0', 'platforms.0']);
+        $this->put(route('admin.games.update', $game), $this->payload(['genres' => 'bad', 'platforms' => 'bad']))
+            ->assertSessionHasErrors(['genres', 'platforms']);
+
+        $this->assertDatabaseHas('games', ['id' => $game->id, 'title' => 'Jogo original']);
+        $this->assertSame([$genre->id], $game->fresh()->genres->modelKeys());
+        $this->assertSame([$platform->id], $game->fresh()->platforms->modelKeys());
+    }
+
+    public function test_relationship_storage_failure_rolls_back_attributes_and_all_links(): void
+    {
+        $game = Game::factory()->create(['title' => 'Jogo original', 'description' => 'Descricao original.']);
+        $oldGenre = Genre::create(['name' => 'Aventura']);
+        $newGenre = Genre::create(['name' => 'RPG']);
+        $oldPlatform = Platform::create(['name' => 'PC']);
+        $newPlatform = Platform::create(['name' => 'Xbox']);
+        $game->genres()->attach($oldGenre);
+        $game->platforms()->attach($oldPlatform);
+        $this->actingAs(User::factory()->administrator()->create());
+        DB::statement("CREATE TRIGGER fail_platform_update BEFORE INSERT ON game_platform BEGIN SELECT RAISE(FAIL, 'Falha simulada no vinculo'); END");
+        $this->withoutExceptionHandling();
+
+        try {
+            $this->put(route('admin.games.update', $game), $this->payload([
+                'genres' => [$newGenre->id], 'platforms' => [$newPlatform->id],
+            ]));
+            $this->fail('A edicao deveria falhar ao salvar a plataforma.');
+        } catch (QueryException $exception) {
+            $this->assertStringContainsString('Falha simulada no vinculo', $exception->getMessage());
+        } finally {
+            DB::statement('DROP TRIGGER fail_platform_update');
+        }
+
+        $this->assertDatabaseHas('games', ['id' => $game->id, 'title' => 'Jogo original', 'description' => 'Descricao original.']);
+        $this->assertSame([$oldGenre->id], $game->fresh()->genres->modelKeys());
+        $this->assertSame([$oldPlatform->id], $game->fresh()->platforms->modelKeys());
+        $this->assertDatabaseCount('game_genre', 1);
+        $this->assertDatabaseCount('game_platform', 1);
+    }
+
     public function test_missing_game_returns_not_found_for_edit_and_update(): void
     {
         $this->actingAs(User::factory()->administrator()->create());
