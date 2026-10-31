@@ -8,6 +8,15 @@
         <p class="intro-description">Consulte os jogos cadastrados no catálogo.</p>
         <a class="account-back" href="{{ route('admin.games.create') }}">Cadastrar jogo</a>
 
+        <form action="{{ route('admin.games.index') }}" method="GET" class="catalog-search" role="search">
+            <div class="form-field">
+                <label for="q">Buscar pelo título</label>
+                <input class="form-input" type="search" id="q" name="q" value="{{ $search }}" maxlength="100" @error('q') aria-invalid="true" aria-describedby="erro-q" @enderror>
+                @error('q')<p class="field-error" id="erro-q">{{ $message }}</p>@enderror
+            </div>
+            <button class="primary-button" type="submit">Buscar</button>
+            @if($search !== '')<a class="account-back" href="{{ route('admin.games.index') }}">Limpar busca</a>@endif
+        </form>
 
         <p class="catalog-count">{{ $games->total() }} {{ $games->total() === 1 ? 'jogo encontrado' : 'jogos encontrados' }}</p>
         <div class="games-grid">
@@ -19,8 +28,13 @@
                 </article>
             @empty
                 <div class="catalog-empty">
-                    <p>Nenhum jogo cadastrado por enquanto.</p>
-                    <a class="account-back" href="{{ route('admin.games.create') }}">Cadastrar o primeiro jogo</a>
+                    @if($search !== '')
+                        <p>Nenhum jogo encontrado para esta busca.</p>
+                        <a class="account-back" href="{{ route('admin.games.index') }}">Limpar busca</a>
+                    @else
+                        <p>Nenhum jogo cadastrado por enquanto.</p>
+                        <a class="account-back" href="{{ route('admin.games.create') }}">Cadastrar o primeiro jogo</a>
+                    @endif
                 </div>
             @endforelse
         </div>
