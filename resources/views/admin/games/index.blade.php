@@ -5,7 +5,7 @@
 @section('content')
     <section aria-labelledby="titulo-jogos-admin">
         <h1 id="titulo-jogos-admin">Gerenciar jogos<span>.</span></h1>
-        <p class="intro-description">Consulte os jogos cadastrados no catálogo.</p>
+        <p class="intro-description">Consulte e edite os jogos cadastrados no catálogo.</p>
         <a class="account-back" href="{{ route('admin.games.create') }}">Cadastrar jogo</a>
 
         <form action="{{ route('admin.games.index') }}" method="GET" class="catalog-search" role="search">
@@ -24,7 +24,10 @@
                 <article class="game-card">
                     <h2>{{ $game->title }}</h2>
                     <p>{{ $game->developer }}</p>
-                    <a class="account-back" href="{{ route('games.show', $game) }}">Ver no catálogo</a>
+                    <div class="admin-game-actions">
+                        <a class="account-back" href="{{ route('games.show', $game) }}">Ver no catálogo</a>
+                        <a class="account-back" href="{{ route('admin.games.edit', $game) }}">Editar<span class="sr-only"> {{ $game->title }}</span></a>
+                    </div>
                 </article>
             @empty
                 <div class="catalog-empty">

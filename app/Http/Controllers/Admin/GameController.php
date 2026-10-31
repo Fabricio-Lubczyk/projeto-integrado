@@ -50,6 +50,17 @@ class GameController extends Controller
         return to_route('admin.games.create')->with('status', 'Jogo cadastrado no catálogo.');
     }
 
+    public function edit(Game $game): View
+    {
+        $game->load(['genres', 'platforms']);
+
+        return view('admin.games.edit', [
+            'game' => $game,
+            'genres' => Genre::orderBy('name')->get(),
+            'platforms' => Platform::orderBy('name')->get(),
+        ]);
+    }
+
     public function update(UpdateGameRequest $request, Game $game): RedirectResponse
     {
         DB::transaction(function () use ($request, $game) {

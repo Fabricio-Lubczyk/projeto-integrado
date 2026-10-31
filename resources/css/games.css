@@ -15,6 +15,8 @@
 .game-detail section { margin-top: 36px; }
 .game-description { margin-top: 16px; color: var(--text-secondary); line-height: 1.8; white-space: pre-line; }
 .game-card h2 a { text-decoration: none; }
+.admin-game-actions { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.admin-game-actions .account-back { margin-top: 16px; }
 .admin-game-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .admin-game-pagination .account-back { margin-top: 0; }
 .admin-game-pagination p, .admin-pagination-disabled { color: var(--text-secondary); font-size: 13px; }
