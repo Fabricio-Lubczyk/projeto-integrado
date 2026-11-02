@@ -11,7 +11,7 @@ class Game extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'developer', 'released_on', 'description'];
+    protected $fillable = ['title', 'developer', 'released_on', 'description', 'steam_app_id', 'cover_url', 'screenshots'];
 
     public function genres(): BelongsToMany
     {
@@ -30,6 +30,6 @@ class Game extends Model
 
     protected function casts(): array
     {
-        return ['released_on' => 'date'];
+        return ['released_on' => 'date', 'steam_app_id' => 'integer', 'screenshots' => 'array'];
     }
 }

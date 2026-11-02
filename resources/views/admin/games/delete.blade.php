@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Excluir jogo')
 
-@section('content')
+@section('admin-content')
     <section class="auth-panel game-deletion" aria-labelledby="titulo-exclusao">
         <h1 id="titulo-exclusao" class="auth-title">Excluir jogo<span>?</span></h1>
         <dl class="account-details">

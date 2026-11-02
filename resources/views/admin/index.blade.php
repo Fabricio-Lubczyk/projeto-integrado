@@ -1,28 +1,31 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Administração')
+@section('title', 'Painel')
 
-@section('content')
-    <section class="auth-panel" aria-labelledby="titulo-admin">
-        <p class="eyebrow"><span aria-hidden="true"></span> Acesso administrativo</p>
-        <h1 id="titulo-admin" class="auth-title">Administração<span>.</span></h1>
-        <p class="auth-description">Área reservada para gerenciar a comunidade e o catálogo de jogos.</p>
-
-        <dl class="account-details">
-            <div>
-                <dt>Conectado como</dt>
-                <dd>{{ auth()->user()->name }}</dd>
+@section('admin-content')
+    <header class="admin-page-heading">
+        <div><h1>Painel</h1><p>Gerencie os jogos publicados no site.</p></div>
+        <a class="primary-button" href="{{ route('admin.games.create') }}"><span aria-hidden="true">+</span> Cadastrar jogo</a>
+    </header>
+    <div class="admin-overview">
+        <div><span>Jogos cadastrados</span><strong>{{ $gameCount }}</strong></div>
+        <div><span>Avaliações recebidas</span><strong>{{ $reviewCount }}</strong></div>
+    </div>
+    <section class="admin-register" aria-labelledby="cadastros-recentes">
+        <header><h2 id="cadastros-recentes">Últimos jogos cadastrados</h2><a href="{{ route('admin.games.index') }}">Gerenciar jogos →</a></header>
+        @if($games->isNotEmpty())
+            <div class="admin-table-scroll">
+                <table class="admin-table">
+                    <thead><tr><th scope="col">Jogo</th><th scope="col">Desenvolvedora</th><th scope="col">Cadastro</th><th scope="col"><span class="sr-only">Ações</span></th></tr></thead>
+                    <tbody>
+                        @foreach($games as $game)
+                            <tr><td><a href="{{ route('games.show', $game) }}">{{ $game->title }}</a></td><td>{{ $game->developer }}</td><td>{{ $game->created_at->format('d/m/Y') }}</td><td><a href="{{ route('admin.games.edit', $game) }}">Editar<span class="sr-only"> {{ $game->title }}</span></a></td></tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-            <div>
-                <dt>Perfil de acesso</dt>
-                <dd>Administrador</dd>
-            </div>
-        </dl>
-
-        <a class="account-back" href="{{ route('admin.games.index') }}">Gerenciar jogos</a>
-
-        <a class="account-back" href="{{ route('admin.games.create') }}">Cadastrar jogo</a>
-
-        <a class="account-back" href="{{ route('account.show') }}">Ver minha conta</a>
+        @else
+            <div class="admin-empty"><h3>Nenhum jogo cadastrado</h3><p>Os jogos adicionados ao catálogo vão aparecer aqui.</p><a href="{{ route('admin.games.create') }}">Cadastrar o primeiro jogo</a></div>
+        @endif
     </section>
 @endsection

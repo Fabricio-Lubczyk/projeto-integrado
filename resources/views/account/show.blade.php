@@ -31,7 +31,7 @@
             @empty
                 <p>Você ainda não avaliou nenhum jogo.</p>
             @endforelse
-            {{ $reviews->links() }}
+            {{ $reviews->links('partials.pagination') }}
         </section>
 
         <a class="account-back" href="{{ route('inicio') }}">Voltar ao início</a>

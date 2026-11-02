@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Gerenciar jogos')
 
-@section('content')
+@section('admin-content')
     <section aria-labelledby="titulo-jogos-admin">
         <h1 id="titulo-jogos-admin">Gerenciar jogos<span>.</span></h1>
         <p class="intro-description">Consulte, edite e exclua os jogos cadastrados no catálogo.</p>

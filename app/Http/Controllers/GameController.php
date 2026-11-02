@@ -16,10 +16,11 @@ class GameController extends Controller
         $game->load(['genres', 'platforms']);
         $reviews = $game->reviews()->with('user')->latest()->paginate(10);
         [$reviewCount, $reviewAverage] = $reviewService->summary($game);
+        $ratingDistribution = $game->reviews()->selectRaw('rating, count(*) as total')->groupBy('rating')->pluck('total', 'rating');
         $hasReviewed = auth()->check()
             && $game->reviews()->where('user_id', auth()->id())->exists();
 
-        return view('games.show', compact('game', 'reviews', 'hasReviewed', 'reviewCount', 'reviewAverage'));
+        return view('games.show', compact('game', 'reviews', 'hasReviewed', 'reviewCount', 'reviewAverage', 'ratingDistribution'));
     }
 
     public function index(Request $request): View
@@ -39,7 +40,7 @@ class GameController extends Controller
         $platform = $data['platform'] ?? '';
         $genres = Genre::orderBy('name')->get();
         $platforms = Platform::orderBy('name')->get();
-        $games = Game::query()->with(['genres', 'platforms'])
+        $games = Game::query()->with(['genres', 'platforms'])->withAvg('reviews', 'rating')->withCount('reviews')
             ->when($genre !== '', fn ($query) => $query->whereHas('genres', fn ($query) => $query->whereKey($genre)))
             ->when($platform !== '', fn ($query) => $query->whereHas('platforms', fn ($query) => $query->whereKey($platform)))
             ->when($search !== '', fn ($query) => $query->whereLike('title', '%'.$search.'%'))

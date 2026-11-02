@@ -2,6 +2,8 @@
 @import './auth.css';
 @import './games.css';
 @import './reviews.css';
+@import './admin.css';
+@import './playnota.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';

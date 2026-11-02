@@ -4,7 +4,7 @@
 
 @section('content')
     <section aria-labelledby="titulo-catalogo">
-        <h1 id="titulo-catalogo">Catálogo de jogos<span>.</span></h1>
+        <h1 id="titulo-catalogo">Jogos<span>.</span></h1>
         <p class="intro-description">Encontre um jogo pelo título e conheça seus detalhes.</p>
         <form action="{{ route('games.index') }}" method="GET" class="catalog-search" role="search">
             <div class="form-field">
@@ -38,18 +38,11 @@
         <p class="catalog-count">{{ $games->total() }} {{ $games->total() === 1 ? 'jogo encontrado' : 'jogos encontrados' }}</p>
         <div class="games-grid">
             @forelse($games as $game)
-                <article class="game-card">
-                    <h2><a href="{{ route('games.show', $game) }}">{{ $game->title }}</a></h2>
-                    <p>{{ $game->developer }}</p>
-                    <ul class="game-tags" aria-label="Gêneros">
-                        @foreach($game->genres as $item)<li>{{ $item->name }}</li>@endforeach
-                    </ul>
-                    <p>{{ $game->released_on?->format('d/m/Y') ?? 'Lançamento não informado' }}</p>
-                </article>
+                <x-game-tile :game="$game" />
             @empty
                 <p class="catalog-empty">{{ ($search !== '' || $genre !== '' || $platform !== '') ? 'Nenhum jogo encontrado para esta busca.' : 'Nenhum jogo cadastrado por enquanto.' }}</p>
             @endforelse
         </div>
-        <div class="catalog-pagination">{{ $games->links() }}</div>
+        <div class="catalog-pagination">{{ $games->links('partials.pagination') }}</div>
     </section>
 @endsection

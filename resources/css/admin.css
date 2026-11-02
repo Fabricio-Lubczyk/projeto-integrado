@@ -1,0 +1,65 @@
+.admin-area { --page-background: #171717; --surface-background: #202020; --text-primary: #ededed; --text-secondary: #aaa; --accent: #dedede; --border: #353535; background: #171717; font-family: Arial, Helvetica, sans-serif; }
+.admin-shell { display: flex; min-height: 100svh; }
+.admin-sidebar { display: flex; flex-direction: column; width: 240px; flex-shrink: 0; background: #101010; border-right: 1px solid #303030; padding: 28px 18px 20px; }
+.admin-brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; text-decoration: none; line-height: 1.5; }
+.admin-brand > span { display: grid; place-items: center; width: 32px; height: 32px; background: #e3e3e3; color: #161616; border-radius: 4px; font-size: 12px; flex-shrink: 0; }
+.admin-sidebar-label { margin: 48px 12px 14px; font-size: 11px; color: #777; }
+.admin-sidebar nav { display: grid; gap: 5px; }
+.admin-sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 4px; color: #999; font-size: 14px; text-decoration: none; }
+.admin-sidebar nav a > span { width: 16px; font-size: 18px; text-align: center; }
+.admin-sidebar nav a:hover { background: #1c1c1c; color: #fff; }
+.admin-sidebar nav a[aria-current] { background: #292929; color: #fff; }
+.admin-sidebar-bottom { margin-top: auto; padding-top: 70px; display: grid; gap: 16px; font-size: 12px; color: #999; }
+.admin-sidebar-bottom > a { text-decoration: none; padding-inline: 12px; }
+.admin-sidebar-bottom > a span { float: right; }
+.admin-user { border-top: 1px solid #303030; padding: 20px 12px 0; display: flex; gap: 10px; align-items: center; }
+.admin-avatar { display: grid; place-items: center; background: #333; color: #ddd; width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+.admin-user strong { display: block; color: #ddd; font-size: 12px; font-weight: 500; overflow-wrap: anywhere; }
+.admin-user small { display: block; margin-top: 5px; color: #888; font-size: 11px; }
+.admin-sidebar-bottom button { color: #999; cursor: pointer; padding: 6px 12px; text-decoration: underline; text-underline-offset: 4px; }
+.admin-body { flex: 1; min-width: 0; }
+.admin-topbar { min-height: 68px; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid #303030; font-size: 12px; color: #888; background: #141414; }
+.admin-topbar strong { font-weight: 400; color: #d4d4d4; }
+.admin-topbar span span { padding: 0 16px; color: #555; }
+.admin-topbar > a { white-space: nowrap; color: #aaa; text-decoration: none; }
+.admin-main { padding: 40px; max-width: 1400px; margin-inline: auto; }
+.admin-main:focus { outline: none; }
+.admin-main h1 { margin: 0 0 10px; font-size: 28px; font-weight: 600; letter-spacing: -.025em; }
+.admin-main h1 > span { display: none; }
+.admin-main .intro-description { font-size: 14px; }
+.admin-page-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 30px; }
+.admin-page-heading p { font-size: 14px; color: #999; line-height: 1.6; }
+.admin-area .primary-button { min-height: 40px; padding: 10px 16px; border-radius: 4px; background: #e3e3e3; color: #171717; font-size: 13px; font-weight: 600; gap: 12px; white-space: nowrap; text-decoration: none; }
+.admin-area .primary-button:hover { background: #fff; color: #111; }
+.admin-overview { display: flex; border-block: 1px solid #353535; padding-block: 24px; margin-bottom: 36px; gap: 70px; }
+.admin-overview div { display: flex; flex-direction: column; gap: 12px; }
+.admin-overview span { font-size: 12px; color: #999; }
+.admin-overview strong { font-size: 30px; font-weight: 500; line-height: 1; letter-spacing: -.04em; }
+.admin-register { border: 1px solid #353535; border-radius: 5px; overflow: hidden; }
+.admin-register > header { padding: 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; border-bottom: 1px solid #353535; background: #1e1e1e; }
+.admin-register h2 { font-size: 14px; font-weight: 600; margin: 0; max-width: none; }
+.admin-register header > a { color: #aaa; text-decoration: none; font-size: 12px; }
+.admin-table-scroll { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+.admin-table th { font-size: 11px; font-weight: 400; color: #888; background: #1b1b1b; }
+.admin-table th, .admin-table td { padding: 16px 20px; border-bottom: 1px solid #303030; }
+.admin-table td { color: #aaa; }
+.admin-table td:first-child { color: #e2e2e2; font-weight: 500; min-width: 180px; }
+.admin-table a { text-decoration: none; }
+.admin-table tr:last-child td { border: 0; }
+.admin-table tbody tr:hover { background: #202020; }
+.admin-empty { padding: 60px 24px; text-align: center; }
+.admin-empty h3 { font-size: 16px; font-weight: 500; }
+.admin-empty p { margin: 12px 0 22px; font-size: 13px; color: #888; }
+.admin-empty a { font-size: 13px; color: #ddd; text-underline-offset: 4px; }
+.admin-area .auth-panel { width: 100%; max-width: 760px; margin: 0; padding: 28px; border-radius: 5px; }
+.admin-area .form-input { background: #151515; border-color: #444; border-radius: 4px; }
+.admin-area .form-input:focus { outline-color: #aaa; border-color: #aaa; }
+.admin-area .game-card { border-radius: 4px; }
+.admin-area .account-back { color: #ccc; }
+@media(max-width: 1000px) { .admin-sidebar { width: 200px; padding-inline: 12px; } .admin-main { padding: 28px; } .admin-topbar { padding-inline: 28px; } }
+@media(max-width: 700px) { .admin-shell { flex-direction: column; } .admin-sidebar { width: 100%; padding: 18px 16px 10px; border-right: 0; border-bottom: 1px solid #333; } .admin-sidebar-label, .admin-sidebar-bottom { display: none; } .admin-sidebar nav { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 16px; } .admin-sidebar nav a { padding: 10px; font-size: 12px; } .admin-sidebar nav a > span { display: none; } .admin-topbar { padding: 14px 16px; min-height: 50px; font-size: 11px; } .admin-topbar span span { padding-inline: 6px; } .admin-main { padding: 24px 16px; } .admin-page-heading { flex-wrap: wrap; gap: 16px; } .admin-main h1 { font-size: 25px; } .admin-overview { gap: 36px; } .admin-register > header { padding: 16px; } .admin-register h2 { font-size: 13px; } .admin-register header > a { font-size: 11px; } .admin-area .auth-panel { padding: 20px 16px; } }
+
+@media(max-width: 700px) { .admin-overview { flex-wrap: wrap; gap: 24px; } .admin-topbar { flex-wrap: wrap; gap: 10px; } .admin-register > header { flex-wrap: wrap; } }
+
+.admin-table th, .admin-table td { position: relative; }

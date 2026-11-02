@@ -15,6 +15,9 @@ class GameResource extends JsonResource
             'developer' => $this->developer,
             'released_on' => $this->released_on?->format('Y-m-d'),
             'description' => $this->description,
+            'cover_url' => $this->cover_url,
+            'steam_app_id' => $this->steam_app_id,
+            'screenshots' => $this->screenshots ?? [],
             'genres' => $this->genres->map->only(['id', 'name']),
             'platforms' => $this->platforms->map->only(['id', 'name']),
         ];

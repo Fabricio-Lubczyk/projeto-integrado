@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Editar jogo')
 
-@section('content')
+@section('admin-content')
     <section class="auth-panel" aria-labelledby="titulo-jogo">
         <h1 id="titulo-jogo" class="auth-title">Editar jogo<span>.</span></h1>
         <p class="auth-description">Atualize os dados que aparecem no catálogo.</p>

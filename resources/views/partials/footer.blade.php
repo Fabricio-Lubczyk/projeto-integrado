@@ -2,7 +2,7 @@
     <div class="page-container footer-content">
         <div class="footer-about">
             <p class="footer-name">{{ config('app.name') }}</p>
-            <p>Jogos, experiências e opiniões que se encontram.</p>
+            <p>Notas de jogadores. Opiniões de verdade.</p>
         </div>
         <div class="footer-meta">
             <p>&copy; {{ now()->year }} {{ config('app.name') }}.</p>
