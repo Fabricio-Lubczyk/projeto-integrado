@@ -12,6 +12,11 @@ class Review extends Model
 
     protected $fillable = ['user_id', 'game_id', 'rating', 'comment'];
 
+    protected function casts(): array
+    {
+        return ['is_demo' => 'boolean'];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

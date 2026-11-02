@@ -8,7 +8,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
     </head>
-    <body>
+    <body class="{{ request()->routeIs('admin.*') ? 'admin-area' : 'public-area' }}">
         <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
         <div class="site-shell">
             @include('partials.header')

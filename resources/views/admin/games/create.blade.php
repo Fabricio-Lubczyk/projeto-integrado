@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Cadastrar jogo')
 
-@section('content')
+@section('admin-content')
     <section class="auth-panel" aria-labelledby="titulo-jogo">
         <h1 id="titulo-jogo" class="auth-title">Cadastrar jogo<span>.</span></h1>
         <p class="auth-description">Adicione os dados que vão aparecer no catálogo.</p>

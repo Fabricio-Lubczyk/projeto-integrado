@@ -8,11 +8,17 @@ use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('inicio');
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('inicio');
 Route::get('/jogos', [GameController::class, 'index'])->name('games.index');
 Route::get('/jogos/{game}', [GameController::class, 'show'])->whereNumber('game')->name('games.show');
 Route::post('/jogos/{game}/avaliacoes', [ReviewController::class, 'store'])
     ->middleware('auth')->whereNumber('game')->name('reviews.store');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/avaliacoes/{review}/editar', [ReviewController::class, 'edit'])->name('reviews.edit');
+    Route::put('/avaliacoes/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/avaliacoes/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
 
 Route::get('/conta', [AccountController::class, 'show'])
     ->middleware('auth')
@@ -37,6 +43,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/jogos/{game}', [AdminGameController::class, 'update'])->whereNumber('game')->name('games.update');
     Route::get('/jogos/{game}/excluir', [AdminGameController::class, 'delete'])->whereNumber('game')->name('games.delete');
     Route::delete('/jogos/{game}', [AdminGameController::class, 'destroy'])->whereNumber('game')->name('games.destroy');
+});
+
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/games', [App\Http\Controllers\Api\GameController::class, 'index'])->name('games.index');
+    Route::get('/games/{game}', [App\Http\Controllers\Api\GameController::class, 'show'])->name('games.show');
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::post('/games', [App\Http\Controllers\Api\GameController::class, 'store'])->name('games.store');
+        Route::put('/games/{game}', [App\Http\Controllers\Api\GameController::class, 'update'])->name('games.update');
+        Route::delete('/games/{game}', [App\Http\Controllers\Api\GameController::class, 'destroy'])->name('games.destroy');
+    });
 });
 
 require __DIR__.'/auth.php';

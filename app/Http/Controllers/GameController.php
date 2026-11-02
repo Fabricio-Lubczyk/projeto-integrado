@@ -5,19 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Genre;
 use App\Models\Platform;
+use App\Services\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class GameController extends Controller
 {
-    public function show(Game $game): View
+    public function show(Game $game, ReviewService $reviewService): View
     {
         $game->load(['genres', 'platforms']);
         $reviews = $game->reviews()->with('user')->latest()->paginate(10);
+        [$reviewCount, $reviewAverage] = $reviewService->summary($game);
+        $ratingDistribution = $game->reviews()->selectRaw('rating, count(*) as total')->groupBy('rating')->pluck('total', 'rating');
         $hasReviewed = auth()->check()
             && $game->reviews()->where('user_id', auth()->id())->exists();
 
-        return view('games.show', compact('game', 'reviews', 'hasReviewed'));
+        return view('games.show', compact('game', 'reviews', 'hasReviewed', 'reviewCount', 'reviewAverage', 'ratingDistribution'));
     }
 
     public function index(Request $request): View
@@ -37,7 +40,7 @@ class GameController extends Controller
         $platform = $data['platform'] ?? '';
         $genres = Genre::orderBy('name')->get();
         $platforms = Platform::orderBy('name')->get();
-        $games = Game::query()->with(['genres', 'platforms'])
+        $games = Game::query()->with(['genres', 'platforms'])->withAvg('reviews', 'rating')->withCount('reviews')
             ->when($genre !== '', fn ($query) => $query->whereHas('genres', fn ($query) => $query->whereKey($genre)))
             ->when($platform !== '', fn ($query) => $query->whereHas('platforms', fn ($query) => $query->whereKey($platform)))
             ->when($search !== '', fn ($query) => $query->whereLike('title', '%'.$search.'%'))
