@@ -13,6 +13,9 @@
             <a class="admin-brand" href="{{ route('admin.index') }}"><span aria-hidden="true">PN</span>{{ config('app.name') }}</a>
             <p class="admin-sidebar-label">Administração</p>
             <nav aria-label="Administração">
+                @if(auth()->user()->is_admin)
+                    <a href="{{ route('admin.users.index') }}" @if(request()->routeIs('admin.users.*')) aria-current="page" @endif>Usuários e cargos</a>
+                @endif
                 <a href="{{ route('admin.index') }}" @if(request()->routeIs('admin.index')) aria-current="page" @endif><span aria-hidden="true">▦</span> Painel</a>
                 <a href="{{ route('admin.games.index') }}" @if(request()->routeIs('admin.games.index', 'admin.games.edit', 'admin.games.delete')) aria-current="page" @endif><span aria-hidden="true">☷</span> Gerenciar jogos</a>
                 <a href="{{ route('admin.games.create') }}" @if(request()->routeIs('admin.games.create')) aria-current="page" @endif><span aria-hidden="true">+</span> Cadastrar jogo</a>
@@ -20,7 +23,7 @@
             <div class="admin-sidebar-bottom">
                 <a href="{{ route('games.index') }}">Abrir catálogo <span aria-hidden="true">↗</span></a>
                 <a href="{{ route('account.show') }}">Ver minha conta</a>
-                <div class="admin-user"><span class="admin-avatar" aria-hidden="true">{{ mb_substr(auth()->user()->name, 0, 1) }}</span><div><strong>{{ auth()->user()->name }}</strong><small>Administrador</small></div></div>
+                <div class="admin-user"><span class="admin-avatar" aria-hidden="true">{{ mb_substr(auth()->user()->name, 0, 1) }}</span><div><strong>{{ auth()->user()->name }}</strong><small>{{ auth()->user()->roleLabel() }}</small></div></div>
                 <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit">Sair da conta</button></form>
             </div>
         </aside>

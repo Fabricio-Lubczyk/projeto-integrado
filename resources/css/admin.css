@@ -63,3 +63,9 @@
 @media(max-width: 700px) { .admin-overview { flex-wrap: wrap; gap: 24px; } .admin-topbar { flex-wrap: wrap; gap: 10px; } .admin-register > header { flex-wrap: wrap; } }
 
 .admin-table th, .admin-table td { position: relative; }
+
+.admin-role-guide { margin: 24px 0; padding: 18px; border: 1px solid #383838; border-radius: 4px; }
+.admin-role-guide p { margin: 6px 0; font-size: 13px; line-height: 1.6; color: #bbb; }
+.admin-users-table { overflow-x: auto; }
+.admin-users-table td { overflow-wrap: anywhere; min-width: 120px; }
+.admin-users-shortcut { margin: 0 0 24px; }

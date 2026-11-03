@@ -8,9 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsAdmin
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string $scope = 'catalog'): Response
     {
-        abort_unless($request->user()?->is_admin === true, 403);
+        $user = $request->user();
+        abort_unless($scope === 'users' ? $user?->is_admin === true : $user?->canManageGames(), 403);
 
         return $next($request);
     }

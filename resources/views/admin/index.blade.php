@@ -11,6 +11,9 @@
         <div><span>Jogos cadastrados</span><strong>{{ $gameCount }}</strong></div>
         <div><span>Avaliações recebidas</span><strong>{{ $reviewCount }}</strong></div>
     </div>
+    @if(auth()->user()->is_admin)
+        <p class="admin-users-shortcut"><a class="account-back" href="{{ route('admin.users.index') }}">Gerenciar usuários e cargos →</a></p>
+    @endif
     <section class="admin-register" aria-labelledby="cadastros-recentes">
         <header><h2 id="cadastros-recentes">Últimos jogos cadastrados</h2><a href="{{ route('admin.games.index') }}">Gerenciar jogos →</a></header>
         @if($games->isNotEmpty())

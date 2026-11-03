@@ -14,6 +14,7 @@ Site de consulta e avaliação de jogos, desenvolvido para as disciplinas de Ban
 - Detalhes dos jogos com capas, imagens, informações e avaliações.
 - Uma avaliação por usuário e jogo, com nota de 1 a 5 e comentário. O autor pode editar ou excluir.
 - Administração com cadastro, edição e exclusão de jogos com confirmação.
+- Gestão de contas com cargos de administrador geral, responsável pelo catálogo e jogador.
 - API JSON com CRUD de jogos.
 - Integração com PostgreSQL no Neon e importação de informações públicas da Steam.
 
@@ -64,13 +65,17 @@ php artisan serve
 
 Acesse http://localhost:8000. Para trabalhar no CSS e JavaScript com atualização automática, execute `npm run dev` em outro terminal.
 
-Para usar a base completa de demonstração, execute o SQL ou restaure o backup em um banco vazio, em vez de criar e preencher as mesmas tabelas novamente. O script completo também registra as migrations já aplicadas.
+Para usar a base completa de demonstração, execute o SQL ou restaure o backup em um banco vazio, em vez de criar e preencher as mesmas tabelas novamente. O script completo também registra as migrations já aplicadas. Depois de restaurar uma cópia anterior, execute `php artisan migrate` para aplicar as mudanças de estrutura que vieram depois do backup, incluindo a permissão de catálogo.
 
 Caso prefira SQLite no desenvolvimento, mantenha `DB_CONNECTION=sqlite`, crie `database/database.sqlite` e execute as migrations. Funções, procedimentos e gatilhos específicos do PostgreSQL não são criados nesse modo.
 
 ## Administração e importação de jogos
 
-Novas contas são de jogadores. Para conceder acesso administrativo a uma conta no seu ambiente, use `php artisan tinker`:
+Novas contas pelo cadastro público são de jogadores. O administrador geral pode acessar **Usuários e cargos** em `/admin/usuarios`, cadastrar contas e alterar os cargos existentes.
+
+O administrador geral gerencia jogos, contas e cargos. O responsável pelo catálogo pode cadastrar, editar e excluir jogos pela interface e API, mas não acessa a gestão de contas. Jogadores gerenciam apenas a própria conta e avaliações. Não é permitido retirar o próprio cargo de administrador geral, evitando deixar o sistema sem um responsável.
+
+Os administradores já existentes continuam com acesso geral. Para criar o primeiro administrador em um banco novo sem nenhum, use `php artisan tinker`:
 
 ```php
 $user = App\Models\User::where('email', 'seu-email@exemplo.com')->firstOrFail();
@@ -102,6 +107,9 @@ A importação depende da disponibilidade da Steam e atualiza os registros já v
 | POST | `/jogos/{game}/avaliacoes` | Publicar avaliação |
 | GET | `/avaliacoes/{review}/editar` | Editar a própria avaliação |
 | PUT / DELETE | `/avaliacoes/{review}` | Atualizar ou excluir a própria avaliação |
+| GET | `/admin/usuarios` | Buscar contas e filtrar por cargo (administrador geral) |
+| GET / POST | `/admin/usuarios/novo` / `/admin/usuarios` | Formulário e cadastro de conta |
+| GET / PATCH | `/admin/usuarios/{user}/cargo` | Formulário e alteração de cargo |
 | GET | `/admin/jogos` | Gerenciar jogos |
 | GET / POST | `/admin/jogos/novo` / `/admin/jogos` | Formulário e cadastro de jogo |
 | GET / PUT | `/admin/jogos/{game}/editar` / `/admin/jogos/{game}` | Formulário e atualização de jogo |
@@ -138,7 +146,7 @@ Exemplo de corpo para criação ou atualização:
 
 O título deve ser único. Os arrays podem receber IDs existentes de gêneros e plataformas. As respostas usam `GameResource`, incluindo informações dos jogos, imagens e relacionamentos. Dados inválidos retornam 422 e registros inexistentes retornam 404.
 
-As consultas são públicas. POST, PUT e DELETE exigem sessão autenticada de administrador e token CSRF válido. A API está no grupo web do Laravel e não usa autenticação por token. Para testar a escrita com Postman ou outro cliente, preserve os cookies obtidos no login e envie o token do formulário em `_token` ou no cabeçalho `X-CSRF-TOKEN`, junto de `Accept: application/json`.
+As consultas são públicas. POST, PUT e DELETE exigem sessão autenticada de administrador geral ou responsável pelo catálogo e token CSRF válido. A API está no grupo web do Laravel e não usa autenticação por token. Para testar a escrita com Postman ou outro cliente, preserve os cookies obtidos no login e envie o token do formulário em `_token` ou no cabeçalho `X-CSRF-TOKEN`, junto de `Accept: application/json`.
 
 ## Banco de dados
 
@@ -161,7 +169,7 @@ php artisan test --filter=HomeDiscoveryTest
 npm run build
 ```
 
-O `phpunit.xml` configura SQLite em memória, sessões e cache em memória e `DB_URL` vazio. A suíte cobre contas, permissões, CRUD de jogos, filtros, avaliações, API, importação Steam e página inicial. Na conferência de 03/11/2026 foram aprovados 101 testes, com 767 asserções; dois testes de PostgreSQL foram ignorados no SQLite.
+O `phpunit.xml` configura SQLite em memória, sessões e cache em memória e `DB_URL` vazio. A suíte cobre contas, permissões, CRUD de jogos, filtros, avaliações, API, importação Steam e página inicial. Na conferência de 03/11/2026 foram aprovados 110 testes, com 841 asserções; dois testes de PostgreSQL foram ignorados no SQLite.
 
 Para executar `PostgresReviewOperationsTest`, utilize um banco PostgreSQL vazio e exclusivo para testes. Configure `DB_CONNECTION=pgsql`, `DB_DATABASE`, `DB_HOST`, `DB_USERNAME`, `DB_PASSWORD` e SSL no ambiente de teste, mantenha `DB_URL` vazio e execute:
 

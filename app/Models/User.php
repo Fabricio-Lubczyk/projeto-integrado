@@ -45,6 +45,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'is_admin' => 'boolean',
+            'is_catalog_manager' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -52,5 +53,20 @@ class User extends Authenticatable
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function canManageGames(): bool
+    {
+        return $this->is_admin || $this->is_catalog_manager;
+    }
+
+    public function adminRole(): string
+    {
+        return $this->is_admin ? 'admin' : ($this->is_catalog_manager ? 'catalog' : 'player');
+    }
+
+    public function roleLabel(): string
+    {
+        return ['admin' => 'Administrador geral', 'catalog' => 'Responsável pelo catálogo', 'player' => 'Jogador'][$this->adminRole()];
     }
 }

@@ -3,12 +3,14 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('inicio');
+Route::get('/', [HomeController::class, 'index'])->name('inicio');
 Route::get('/jogos', [GameController::class, 'index'])->name('games.index');
 Route::get('/jogos/{game}', [GameController::class, 'show'])->whereNumber('game')->name('games.show');
 Route::post('/jogos/{game}/avaliacoes', [ReviewController::class, 'store'])
@@ -43,6 +45,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/jogos/{game}', [AdminGameController::class, 'update'])->whereNumber('game')->name('games.update');
     Route::get('/jogos/{game}/excluir', [AdminGameController::class, 'delete'])->whereNumber('game')->name('games.delete');
     Route::delete('/jogos/{game}', [AdminGameController::class, 'destroy'])->whereNumber('game')->name('games.destroy');
+});
+
+Route::middleware(['auth', 'admin:users'])->prefix('admin/usuarios')->name('admin.users.')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index');
+    Route::get('/novo', [UserController::class, 'create'])->name('create');
+    Route::post('/', [UserController::class, 'store'])->name('store');
+    Route::get('/{user}/cargo', [UserController::class, 'edit'])->whereNumber('user')->name('edit');
+    Route::patch('/{user}/cargo', [UserController::class, 'update'])->whereNumber('user')->name('update');
 });
 
 Route::prefix('api')->name('api.')->group(function () {

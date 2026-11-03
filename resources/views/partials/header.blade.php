@@ -18,7 +18,7 @@
         </form>
         <div class="header-actions">
             @auth
-                @if (auth()->user()->is_admin)
+                @if (auth()->user()->canManageGames())
                     <a class="account-link" href="{{ route('admin.index') }}">Administração</a>
                 @endif
                 <a class="account-link account-name" href="{{ route('account.show') }}" @if(request()->routeIs('account.*')) aria-current="page" @endif>Minha conta</a>
