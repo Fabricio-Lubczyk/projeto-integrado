@@ -1,0 +1,17 @@
+.git
+.env
+.env.*
+node_modules
+vendor
+output
+tmp
+tests
+public/hot
+storage/logs
+storage/app/private
+bootstrap/cache/*.php
+database/*.sqlite*
+*.backup
+*.zip
+!composer.lock
+!package-lock.json
